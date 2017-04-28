@@ -18,6 +18,8 @@
 
 @implementation CardItemView
 
+#pragma mark - Inital
+
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -56,28 +58,25 @@
     self.contentView.layer.shouldRasterize = YES;
 }
 
+#pragma mark - UIPanGestureRecognizer
+
 - (void)panGestHandle:(UIPanGestureRecognizer *)panGest {
     if (panGest.state == UIGestureRecognizerStateChanged) {
-        
         CGPoint movePoint = [panGest translationInView:self.contentView];
         _isLeft = (movePoint.x < 0);
-        
         self.contentView.center = CGPointMake(self.contentView.center.x + movePoint.x, self.contentView.center.y + movePoint.y);
         
         CGFloat angle = (self.contentView.center.x - self.frame.size.width / 2.0) / self.frame.size.width / 4.0;
         _currentAngle = angle;
-
 //        self.contentView.transform = CGAffineTransformMakeRotation(angle);
         
         [panGest setTranslation:CGPointZero inView:self.contentView];
-        
         if ([self.delegate respondsToSelector:@selector(cardItemViewDidMoveRate:anmate:)]) {
             CGFloat rate = fabs(angle)/0.15>1 ? 1 : fabs(angle)/0.15;
             [self.delegate cardItemViewDidMoveRate:rate anmate:NO];
         }
         
     } else if (panGest.state == UIGestureRecognizerStateEnded) {
-        
         CGPoint vel = [panGest velocityInView:self.contentView];
         if (vel.x > 800 || vel.x < - 800) {
             [self remove];
@@ -96,6 +95,8 @@
         }
     }
 }
+
+#pragma mark - Remove
 
 - (void)remove {
     [self removeWithLeft:_isLeft];

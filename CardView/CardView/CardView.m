@@ -9,15 +9,15 @@
 #import "CardView.h"
 #import "CardItemView.h"
 
-static const NSInteger ITEM_VIEW_COUNT = 4;
-static const NSInteger AHEAD_ITEM_COUNT = 5;
+static const NSInteger ITEM_VIEW_COUNT = 4;     //显示的item个数 必须大于2
+static const NSInteger AHEAD_ITEM_COUNT = 5;    //提前几张view开始提醒刷新
 
 @interface CardView () <CardItemViewDelegate>
 
-@property (assign, nonatomic) NSInteger itemCount;
-@property (assign, nonatomic) NSInteger removedCount;
-@property (assign, nonatomic) BOOL isWorking;
-@property (assign, nonatomic) BOOL isAskingMoreData;
+@property (assign, nonatomic) NSInteger itemCount;      //总共的item数量
+@property (assign, nonatomic) NSInteger removedCount;   //已经被移除的view个数
+@property (assign, nonatomic) BOOL isWorking;           //是否正在移除动画中，不去调用itemview的移除方法
+@property (assign, nonatomic) BOOL isAskingMoreData;    //是否已向代理请求数据 数据回来的时候进行状态重置
 
 @end
 
@@ -41,11 +41,13 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;
     
     if (self.subviews.count < ITEM_VIEW_COUNT) {
         for (NSInteger i = self.subviews.count; i < ITEM_VIEW_COUNT; i ++) {
-            [self insertCard:self.removedCount+i];
+            [self insertCard:self.removedCount+i isReload:YES];
         }
-        [self sortCards];
+        [self sortCardsWithRate:0 animate:YES];
     }
 }
+
+#pragma mark - Sort
 
 - (void)sortCardsWithRate:(CGFloat)rate animate:(BOOL)isAnmate {
     for (int i=1; i<self.subviews.count; i++) {
@@ -58,19 +60,23 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;
         }
         CGFloat animationTime = isAnmate ? 0.2 : 0;
         [UIView animateKeyframesWithDuration:animationTime delay:0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
-            CGAffineTransform scaleTransfrom = CGAffineTransformMakeScale(1 - 0.02 * realRate, 1 - 0.02 * realRate);
-            card.transform = CGAffineTransformTranslate(scaleTransfrom, 0, 10*realRate);
+            [self transformCard:card withRate:realRate];
         } completion:nil];
     }
 }
 
-- (void)sortCards {
-    [self sortCardsWithRate:0 animate:NO];
+- (void)transformCard:(CardItemView *)card withRate:(CGFloat)rate {
+    CGAffineTransform scaleTransfrom = CGAffineTransformMakeScale(1 - 0.02 * rate, 1 - 0.02 * rate);
+    card.transform = CGAffineTransformTranslate(scaleTransfrom, 0, 10*rate);
 }
 
 #pragma mark - Insert
 
 - (void)insertCard:(NSInteger)index {
+    [self insertCard:index isReload:NO];
+}
+
+- (void)insertCard:(NSInteger)index isReload:(BOOL)isReload {
     if (index >= self.itemCount) {
         return;
     }
@@ -82,6 +88,12 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;
     itemView.frame = CGRectMake(self.frame.size.width / 2.0 - size.width / 2.0, self.frame.size.height / 2.0 - size.height / 2.0, size.width, size.height);
     itemView.userInteractionEnabled = YES;
     [itemView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestHandle:)]];
+    if (!isReload) {
+        if ((index-self.removedCount) == (ITEM_VIEW_COUNT-1)) {
+            NSInteger rate = ITEM_VIEW_COUNT-2;
+            [self transformCard:itemView withRate:rate];
+        }
+    }
 }
 
 #pragma mark - CardViewDataSource
