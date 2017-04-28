@@ -23,8 +23,8 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setFrame:frame];
         [self initView];
+        [self setFrame:frame];
     }
     return self;
 }
@@ -37,12 +37,14 @@
 }
 
 - (void)initView {
+    [self addSubview:self.contentView];
     [self addPanGest];
     [self configLayer];
 }
 
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
+    [self.contentView setFrame:self.bounds];
     self.originalCenter = CGPointMake(frame.size.width / 2.0, frame.size.height / 2.0);
 }
 
@@ -68,7 +70,7 @@
         
         CGFloat angle = (self.contentView.center.x - self.frame.size.width / 2.0) / self.frame.size.width / 4.0;
         _currentAngle = angle;
-//        self.contentView.transform = CGAffineTransformMakeRotation(angle);
+        self.contentView.transform = CGAffineTransformMakeRotation(-angle);
         
         [panGest setTranslation:CGPointZero inView:self.contentView];
         if ([self.delegate respondsToSelector:@selector(cardItemViewDidMoveRate:anmate:)]) {
@@ -120,6 +122,15 @@
             }
         }
     }];
+}
+
+#pragma mark - Getter
+
+- (UIView *)contentView {
+    if (!_contentView) {
+        _contentView = [[UIView alloc] init];
+    }
+    return _contentView;
 }
 
 @end

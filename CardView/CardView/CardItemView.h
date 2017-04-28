@@ -16,8 +16,9 @@
 
 @end
 
-@interface CardItemView : UICollectionViewCell
+@interface CardItemView : UIView
 
+@property (strong, nonatomic) UIView *contentView;  //内容承载层
 @property (nonatomic, weak) id<CardItemViewDelegate> delegate;
 
 - (void)removeWithLeft:(BOOL)left;
