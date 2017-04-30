@@ -20,26 +20,19 @@
 
 #pragma mark - Inital
 
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self initView];
-        [self setFrame:frame];
-    }
+- (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier {
+    self = [self init];
+    [self setValue:reuseIdentifier forKey:@"reuseIdentifier"];
     return self;
 }
 
 - (instancetype)init {
     if (self = [super init]) {
-        [self initView];
+        [self addSubview:self.contentView];
+        [self addPanGest];
+        [self configLayer];
     }
     return self;
-}
-
-- (void)initView {
-    [self addSubview:self.contentView];
-    [self addPanGest];
-    [self configLayer];
 }
 
 - (void)setFrame:(CGRect)frame {
@@ -116,7 +109,6 @@
         }
     } completion:^(BOOL finished) {
         if (finished) {
-            [self removeFromSuperview];
             if ([self.delegate respondsToSelector:@selector(cardItemViewDidRemoveFromSuperView:)]) {
                 [self.delegate cardItemViewDidRemoveFromSuperView:self];
             }

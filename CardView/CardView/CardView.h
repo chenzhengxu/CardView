@@ -30,6 +30,7 @@
 @property (nonatomic, weak) id <CardViewDataSource> dataSource;
 @property (nonatomic, weak) id <CardViewDelegate> delegate;
 
+- (CardItemView *)dequeueReusableCellWithIdentifier:(NSString *)identifier;
 - (void)deleteTheTopItemViewWithLeft:(BOOL)left;
 - (void)reloadData;
 @end

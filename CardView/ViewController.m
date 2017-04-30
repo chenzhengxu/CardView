@@ -44,7 +44,11 @@
 }
 
 - (CardItemView *)cardView:(CardView *)cardView itemViewAtIndex:(NSInteger)index {
-    CardItemView *itemView = [[CardItemView alloc] init];
+    static NSString *reuseIdentitfier = @"card";
+    CardItemView *itemView = [cardView dequeueReusableCellWithIdentifier:reuseIdentitfier];
+    if (itemView == nil) {
+        itemView = [[CardItemView alloc] initWithReuseIdentifier:reuseIdentitfier];
+    }
     itemView.contentView.backgroundColor = [UIColor colorWithRed:120/255.0 green:194/255.0 blue:234/255.0 alpha:1];
     if (index%2 == 0) {
         itemView.contentView.backgroundColor = [UIColor colorWithRed:175/255.0 green:222/255.0 blue:228/255.0 alpha:1];

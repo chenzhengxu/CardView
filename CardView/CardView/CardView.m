@@ -18,10 +18,23 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;    //提前几张view开始提醒�
 @property (assign, nonatomic) NSInteger removedCount;   //已经被移除的view个数
 @property (assign, nonatomic) BOOL isWorking;           //是否正在移除动画中，不去调用itemview的移除方法
 @property (assign, nonatomic) BOOL isAskingMoreData;    //是否已向代理请求数据 数据回来的时候进行状态重置
+@property (copy, nonatomic) NSMutableDictionary *reuseDict;
 
 @end
 
 @implementation CardView
+
+- (CardItemView *)dequeueReusableCellWithIdentifier:(NSString *)identifier {
+    NSMutableArray *mutableArray = self.reuseDict[identifier];
+    if (mutableArray) {
+        if (mutableArray.count>0) {
+            CardItemView *itemView = [mutableArray lastObject];
+            [mutableArray removeLastObject];
+            return itemView;
+        }
+    }
+    return nil;
+}
 
 - (void)deleteTheTopItemViewWithLeft:(BOOL)left {
     if (self.isWorking) {
@@ -72,22 +85,23 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;    //提前几张view开始提醒�
 
 #pragma mark - Insert
 
-- (void)insertCard:(NSInteger)index {
-    [self insertCard:index isReload:NO];
-}
-
 - (void)insertCard:(NSInteger)index isReload:(BOOL)isReload {
     if (index >= self.itemCount) {
         return;
     }
-    CGSize size = [self itemViewSizeAtIndex:index];
     CardItemView *itemView = [self itemViewAtIndex:index];
+    NSString *originSize = NSStringFromCGSize(itemView.frame.size);
+    if ([originSize isEqualToString:@"{0, 0}"]) { //初始化的itemView 不是缓存池的
+        itemView.delegate = self;
+        [itemView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestHandle:)]];
+    } else {
+        itemView.contentView.transform = CGAffineTransformMakeRotation(0);
+    }
+    CGSize size = [self itemViewSizeAtIndex:index];
     [self insertSubview:itemView atIndex:0];
-    itemView.delegate = self;
     itemView.tag = index+1;
     itemView.frame = CGRectMake(self.frame.size.width / 2.0 - size.width / 2.0, self.frame.size.height / 2.0 - size.height / 2.0, size.width, size.height);
     itemView.userInteractionEnabled = YES;
-    [itemView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestHandle:)]];
     if (!isReload) {
         if ((index-self.removedCount) == (ITEM_VIEW_COUNT-1)) {
             NSInteger rate = ITEM_VIEW_COUNT-2;
@@ -143,7 +157,8 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;    //提前几张view开始提醒�
 - (void)cardItemViewDidRemoveFromSuperView:(CardItemView *)cardItemView {
     self.isWorking = NO;
     self.removedCount ++;
-    [self insertCard:self.removedCount+ITEM_VIEW_COUNT-1];
+    [self insertItemViewToReuseDict:cardItemView];
+    [self insertCard:self.removedCount+ITEM_VIEW_COUNT-1 isReload:NO];
     if (self.removedCount + ITEM_VIEW_COUNT > self.itemCount - AHEAD_ITEM_COUNT) {
         if (!self.isAskingMoreData) {
             self.isAskingMoreData = YES;
@@ -158,6 +173,28 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;    //提前几张view开始提醒�
 
 - (void)cardItemViewDidMoveRate:(CGFloat)rate anmate:(BOOL)anmate {
     [self sortCardsWithRate:rate animate:anmate];
+}
+
+- (void)insertItemViewToReuseDict:(CardItemView *)cardItemView {
+    if (cardItemView.reuseIdentifier) {
+        NSMutableArray *mutableArray = self.reuseDict[cardItemView.reuseIdentifier];
+        if (mutableArray == nil) {
+            mutableArray = [[NSMutableArray alloc] init];
+        }
+        [mutableArray addObject:cardItemView];
+        [self.reuseDict setValue:mutableArray forKey:cardItemView.reuseIdentifier];
+        [cardItemView setCenter:CGPointMake(0, -1000)];
+    }
+    [cardItemView removeFromSuperview];
+}
+
+#pragma mark Getter
+
+- (NSMutableDictionary *)reuseDict {
+    if (_reuseDict == nil) {
+        _reuseDict = [[NSMutableDictionary alloc] init];
+    }
+    return _reuseDict;
 }
 
 @end
