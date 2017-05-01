@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "CardView.h"
+#import "CustomItemView.h"
 
 @interface ViewController () <CardViewDelegate, CardViewDataSource>
 
@@ -32,6 +33,11 @@
     self.cardView.delegate = self;
     self.cardView.dataSource = self;
     [self.cardView reloadData];
+    
+    self.leftButton.layer.cornerRadius = 4.0;
+    self.leftButton.layer.masksToBounds = YES;
+    self.rightButton.layer.cornerRadius = 4.0;
+    self.rightButton.layer.masksToBounds = YES;
 }
 
 - (void)cardViewNeedMoreData:(CardView *)cardView {
@@ -45,19 +51,28 @@
 
 - (CardItemView *)cardView:(CardView *)cardView itemViewAtIndex:(NSInteger)index {
     static NSString *reuseIdentitfier = @"card";
-    CardItemView *itemView = [cardView dequeueReusableCellWithIdentifier:reuseIdentitfier];
+    CustomItemView *itemView = (CustomItemView *)[cardView dequeueReusableCellWithIdentifier:reuseIdentitfier];
     if (itemView == nil) {
-        itemView = [[CardItemView alloc] initWithReuseIdentifier:reuseIdentitfier];
+        itemView = [[CustomItemView alloc] initWithReuseIdentifier:reuseIdentitfier];
     }
-    itemView.contentView.backgroundColor = [UIColor colorWithRed:120/255.0 green:194/255.0 blue:234/255.0 alpha:1];
+    itemView.backgroundColor = [UIColor colorWithRed:120/255.0 green:194/255.0 blue:234/255.0 alpha:1];
     if (index%2 == 0) {
-        itemView.contentView.backgroundColor = [UIColor colorWithRed:175/255.0 green:222/255.0 blue:228/255.0 alpha:1];
+        itemView.backgroundColor = [UIColor colorWithRed:175/255.0 green:222/255.0 blue:228/255.0 alpha:1];
     }
+    itemView.indexLabel.text = [NSString stringWithFormat:@"index:%ld", index];
     return itemView;
 }
 
 - (NSInteger)numberOfItemViewsInCardView:(CardView *)cardView {
     return self.dataArray.count;
+}
+
+- (IBAction)clickLeft:(id)sender {
+    [self.cardView deleteTheTopItemViewWithLeft:YES];
+}
+
+- (IBAction)clickRight:(id)sender {
+    [self.cardView deleteTheTopItemViewWithLeft:NO];
 }
 
 @end

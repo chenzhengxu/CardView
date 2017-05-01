@@ -15,6 +15,8 @@
 		B27DD8D51EB1B4D00042428B /* CardItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = B27DD8D21EB1B4D00042428B /* CardItemView.m */; };
 		B27DD8D61EB1B4D00042428B /* CardView.m in Sources */ = {isa = PBXBuildFile; fileRef = B27DD8D41EB1B4D00042428B /* CardView.m */; };
 		B27DD8D81EB1B4F50042428B /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B27DD8D71EB1B4F50042428B /* ViewController.xib */; };
+		B29180281EB6C769000C7B2E /* CustomItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = B29180271EB6C769000C7B2E /* CustomItemView.m */; };
+		B291802A1EB6C77B000C7B2E /* CustomItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B29180291EB6C77B000C7B2E /* CustomItemView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,9 @@
 		B27DD8D31EB1B4D00042428B /* CardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardView.h; sourceTree = "<group>"; };
 		B27DD8D41EB1B4D00042428B /* CardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardView.m; sourceTree = "<group>"; };
 		B27DD8D71EB1B4F50042428B /* ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ViewController.xib; sourceTree = "<group>"; };
+		B29180261EB6C769000C7B2E /* CustomItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomItemView.h; sourceTree = "<group>"; };
+		B29180271EB6C769000C7B2E /* CustomItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomItemView.m; sourceTree = "<group>"; };
+		B29180291EB6C77B000C7B2E /* CustomItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomItemView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +74,9 @@
 				B27DD8BF1EB1B49A0042428B /* ViewController.h */,
 				B27DD8C01EB1B49A0042428B /* ViewController.m */,
 				B27DD8D71EB1B4F50042428B /* ViewController.xib */,
+				B29180261EB6C769000C7B2E /* CustomItemView.h */,
+				B29180271EB6C769000C7B2E /* CustomItemView.m */,
+				B29180291EB6C77B000C7B2E /* CustomItemView.xib */,
 				B27DD8D01EB1B4D00042428B /* CardView */,
 				B27DD8C51EB1B49A0042428B /* Assets.xcassets */,
 				B27DD8C71EB1B49A0042428B /* LaunchScreen.storyboard */,
@@ -156,6 +164,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B291802A1EB6C77B000C7B2E /* CustomItemView.xib in Resources */,
 				B27DD8C91EB1B49A0042428B /* LaunchScreen.storyboard in Resources */,
 				B27DD8D81EB1B4F50042428B /* ViewController.xib in Resources */,
 				B27DD8C61EB1B49A0042428B /* Assets.xcassets in Resources */,
@@ -171,6 +180,7 @@
 			files = (
 				B27DD8C11EB1B49A0042428B /* ViewController.m in Sources */,
 				B27DD8D51EB1B4D00042428B /* CardItemView.m in Sources */,
+				B29180281EB6C769000C7B2E /* CustomItemView.m in Sources */,
 				B27DD8D61EB1B4D00042428B /* CardView.m in Sources */,
 				B27DD8BE1EB1B49A0042428B /* AppDelegate.m in Sources */,
 				B27DD8BB1EB1B49A0042428B /* main.m in Sources */,

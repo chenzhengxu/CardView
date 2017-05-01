@@ -18,7 +18,7 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;    //提前几张view开始提醒�
 @property (assign, nonatomic) NSInteger removedCount;   //已经被移除的view个数
 @property (assign, nonatomic) BOOL isWorking;           //是否正在移除动画中，不去调用itemview的移除方法
 @property (assign, nonatomic) BOOL isAskingMoreData;    //是否已向代理请求数据 数据回来的时候进行状态重置
-@property (copy, nonatomic) NSMutableDictionary *reuseDict;
+@property (copy, nonatomic) NSMutableDictionary *reuseDict;     //缓存池字典
 
 @end
 
@@ -40,9 +40,11 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;    //提前几张view开始提醒�
     if (self.isWorking) {
         return;
     }
-    self.isWorking = YES;
     CardItemView *itemView = (CardItemView *)self.subviews.lastObject;
-    [itemView removeWithLeft:left];
+    if (itemView) {
+        self.isWorking = YES;
+        [itemView removeWithLeft:left];
+    }
 }
 
 - (void)reloadData {
@@ -66,6 +68,7 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;    //提前几张view开始提醒�
     for (int i=1; i<self.subviews.count; i++) {
         NSInteger index = self.subviews.count-i-1;
         CardItemView *card = self.subviews[index];
+        card.userInteractionEnabled = NO;
         NSInteger y = i>ITEM_VIEW_COUNT-2 ? ITEM_VIEW_COUNT-2 : i;
         CGFloat realRate = y-rate>0 ? y-rate : 0;
         if (i == (ITEM_VIEW_COUNT-1)) {
@@ -90,12 +93,11 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;    //提前几张view开始提醒�
         return;
     }
     CardItemView *itemView = [self itemViewAtIndex:index];
-    NSString *originSize = NSStringFromCGSize(itemView.frame.size);
-    if ([originSize isEqualToString:@"{0, 0}"]) { //初始化的itemView 不是缓存池的
+    if (itemView.delegate == nil) { //初始化的itemView 不是缓存池的
         itemView.delegate = self;
         [itemView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestHandle:)]];
     } else {
-        itemView.contentView.transform = CGAffineTransformMakeRotation(0);
+        itemView.transform = CGAffineTransformMakeRotation(0);
     }
     CGSize size = [self itemViewSizeAtIndex:index];
     [self insertSubview:itemView atIndex:0];
@@ -159,6 +161,8 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;    //提前几张view开始提醒�
     self.removedCount ++;
     [self insertItemViewToReuseDict:cardItemView];
     [self insertCard:self.removedCount+ITEM_VIEW_COUNT-1 isReload:NO];
+    CardItemView *card = [self.subviews lastObject];
+    card.userInteractionEnabled = YES;
     if (self.removedCount + ITEM_VIEW_COUNT > self.itemCount - AHEAD_ITEM_COUNT) {
         if (!self.isAskingMoreData) {
             self.isAskingMoreData = YES;
@@ -183,7 +187,6 @@ static const NSInteger AHEAD_ITEM_COUNT = 5;    //提前几张view开始提醒�
         }
         [mutableArray addObject:cardItemView];
         [self.reuseDict setValue:mutableArray forKey:cardItemView.reuseIdentifier];
-        [cardItemView setCenter:CGPointMake(0, -1000)];
     }
     [cardItemView removeFromSuperview];
 }

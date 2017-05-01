@@ -28,59 +28,60 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        [self addSubview:self.contentView];
-        [self addPanGest];
-        [self configLayer];
+        [self initView];
     }
     return self;
 }
 
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
-    [self.contentView setFrame:self.bounds];
     self.originalCenter = CGPointMake(frame.size.width / 2.0, frame.size.height / 2.0);
+}
+
+- (void)initView {
+    [self addPanGest];
+    [self configLayer];
 }
 
 - (void)addPanGest {
     self.userInteractionEnabled = YES;
     UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestHandle:)];
-    [self.contentView addGestureRecognizer:pan];
+    [self addGestureRecognizer:pan];
 }
 
 - (void)configLayer {
-    self.contentView.layer.cornerRadius = 5.0;
-    self.contentView.layer.masksToBounds = YES;
-    self.contentView.layer.shouldRasterize = YES;
+    self.layer.cornerRadius = 5.0;
+    self.layer.masksToBounds = YES;
 }
 
 #pragma mark - UIPanGestureRecognizer
 
 - (void)panGestHandle:(UIPanGestureRecognizer *)panGest {
     if (panGest.state == UIGestureRecognizerStateChanged) {
-        CGPoint movePoint = [panGest translationInView:self.contentView];
+        CGPoint movePoint = [panGest translationInView:self];
         _isLeft = (movePoint.x < 0);
-        self.contentView.center = CGPointMake(self.contentView.center.x + movePoint.x, self.contentView.center.y + movePoint.y);
+        self.center = CGPointMake(self.center.x + movePoint.x, self.center.y + movePoint.y);
         
-        CGFloat angle = (self.contentView.center.x - self.frame.size.width / 2.0) / self.frame.size.width / 4.0;
+        CGFloat angle = (self.center.x - self.frame.size.width / 2.0) / self.frame.size.width / 4.0;
         _currentAngle = angle;
-        self.contentView.transform = CGAffineTransformMakeRotation(-angle);
+        self.transform = CGAffineTransformMakeRotation(-angle);
         
-        [panGest setTranslation:CGPointZero inView:self.contentView];
+        [panGest setTranslation:CGPointZero inView:self];
         if ([self.delegate respondsToSelector:@selector(cardItemViewDidMoveRate:anmate:)]) {
             CGFloat rate = fabs(angle)/0.15>1 ? 1 : fabs(angle)/0.15;
             [self.delegate cardItemViewDidMoveRate:rate anmate:NO];
         }
         
     } else if (panGest.state == UIGestureRecognizerStateEnded) {
-        CGPoint vel = [panGest velocityInView:self.contentView];
+        CGPoint vel = [panGest velocityInView:self];
         if (vel.x > 800 || vel.x < - 800) {
             [self remove];
             return ;
         }
         if (self.frame.origin.x + self.frame.size.width > 150 && self.frame.origin.x < self.frame.size.width - 150) {
             [UIView animateWithDuration:0.5 animations:^{
-                self.contentView.center = _originalCenter;
-                self.contentView.transform = CGAffineTransformMakeRotation(0);
+                self.center = _originalCenter;
+                self.transform = CGAffineTransformMakeRotation(0);
                 if ([self.delegate respondsToSelector:@selector(cardItemViewDidMoveRate:anmate:)]) {
                     [self.delegate cardItemViewDidMoveRate:0 anmate:YES];
                 }
@@ -103,9 +104,9 @@
     }
     [UIView animateWithDuration:0.2 animations:^{
         if (!left) {
-            self.contentView.center = CGPointMake(self.frame.size.width + 1000, self.center.y + _currentAngle * self.frame.size.height + (_currentAngle == 0 ? 100 : 0));
+            self.center = CGPointMake(self.frame.size.width + 1000, self.center.y + _currentAngle * self.frame.size.height + (_currentAngle == 0 ? 100 : 0));
         } else {
-            self.contentView.center = CGPointMake(- 1000, self.center.y - _currentAngle * self.frame.size.height + (_currentAngle == 0 ? 100 : 0));
+            self.center = CGPointMake(- 1000, self.center.y - _currentAngle * self.frame.size.height + (_currentAngle == 0 ? 100 : 0));
         }
     } completion:^(BOOL finished) {
         if (finished) {
@@ -114,15 +115,6 @@
             }
         }
     }];
-}
-
-#pragma mark - Getter
-
-- (UIView *)contentView {
-    if (!_contentView) {
-        _contentView = [[UIView alloc] init];
-    }
-    return _contentView;
 }
 
 @end

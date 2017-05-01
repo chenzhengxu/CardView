@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11762"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ViewController">
             <connections>
                 <outlet property="cardView" destination="KPo-Od-q5Y" id="a76-MS-puI"/>
+                <outlet property="leftButton" destination="zmG-Rd-ksB" id="KVV-xk-UQQ"/>
+                <outlet property="rightButton" destination="UZB-Kw-3gh" id="L7X-30-Sa5"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -21,18 +23,48 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KPo-Od-q5Y" customClass="CardView">
-                    <rect key="frame" x="67.5" y="133.5" width="240" height="400"/>
+                    <rect key="frame" x="68" y="134" width="240" height="400"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="240" id="Ocg-qK-Gi7"/>
                         <constraint firstAttribute="height" constant="400" id="ahR-7d-vvP"/>
                     </constraints>
                 </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zmG-Rd-ksB">
+                    <rect key="frame" x="60" y="607" width="80" height="30"/>
+                    <color key="backgroundColor" red="0.6708984375" green="0.67046440972222221" blue="0.87396918402777779" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="80" id="V2A-tw-Muf"/>
+                    </constraints>
+                    <state key="normal" title="left">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="clickLeft:" destination="-1" eventType="touchUpInside" id="9oY-yD-6wM"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UZB-Kw-3gh">
+                    <rect key="frame" x="235" y="607" width="80" height="30"/>
+                    <color key="backgroundColor" red="0.6708984375" green="0.67046440969999999" blue="0.87396918400000001" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="80" id="wGj-E8-Jel"/>
+                    </constraints>
+                    <state key="normal" title="right">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="clickRight:" destination="-1" eventType="touchUpInside" id="TCU-Hr-2D2"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="KPo-Od-q5Y" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="2e4-dq-YmQ"/>
+                <constraint firstAttribute="bottom" secondItem="UZB-Kw-3gh" secondAttribute="bottom" constant="30" id="Njn-Fm-gFe"/>
                 <constraint firstItem="KPo-Od-q5Y" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="eBM-Up-2ZA"/>
+                <constraint firstAttribute="bottom" secondItem="zmG-Rd-ksB" secondAttribute="bottom" constant="30" id="kGu-AW-sYW"/>
+                <constraint firstItem="zmG-Rd-ksB" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="60" id="lAG-ww-ZXq"/>
+                <constraint firstAttribute="trailing" secondItem="UZB-Kw-3gh" secondAttribute="trailing" constant="60" id="q2T-vT-RKk"/>
             </constraints>
             <point key="canvasLocation" x="-97" y="59"/>
         </view>

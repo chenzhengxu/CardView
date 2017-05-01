@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @class CardItemView;
-@protocol CardItemViewDelegate <NSObject>
 
+@protocol CardItemViewDelegate <NSObject>
 - (void)cardItemViewDidRemoveFromSuperView:(CardItemView *)CardItemView;
 - (void)cardItemViewDidMoveRate:(CGFloat)rate anmate:(BOOL)anmate;
 
@@ -18,10 +18,10 @@
 
 @interface CardItemView : UIView
 
-@property (strong, nonatomic) UIView *contentView;  //内容承载层
 @property (weak, nonatomic) id<CardItemViewDelegate> delegate;
 @property (nonatomic, readonly, copy) NSString *reuseIdentifier;
 
+- (void)initView;
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 - (void)removeWithLeft:(BOOL)left;
 
