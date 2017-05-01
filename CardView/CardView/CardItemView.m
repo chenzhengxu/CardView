@@ -104,9 +104,9 @@
     }
     [UIView animateWithDuration:0.2 animations:^{
         if (!left) {
-            self.center = CGPointMake(self.frame.size.width + 1000, self.center.y + _currentAngle * self.frame.size.height + (_currentAngle == 0 ? 100 : 0));
+            self.center = CGPointMake([UIScreen mainScreen].bounds.size.width+self.frame.size.width, self.center.y + _currentAngle * self.frame.size.height + (_currentAngle == 0 ? 100 : 0));
         } else {
-            self.center = CGPointMake(- 1000, self.center.y - _currentAngle * self.frame.size.height + (_currentAngle == 0 ? 100 : 0));
+            self.center = CGPointMake(-self.frame.size.width, self.center.y - _currentAngle * self.frame.size.height + (_currentAngle == 0 ? 100 : 0));
         }
     } completion:^(BOOL finished) {
         if (finished) {
